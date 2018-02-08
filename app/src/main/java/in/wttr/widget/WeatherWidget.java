@@ -1,5 +1,6 @@
 package in.wttr.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -27,12 +28,17 @@ import java.net.URL;
 public class WeatherWidget extends AppWidgetProvider {
     public static final String DATA_FETCHED = "in.wttr.widget.DATA_FETCHED";
 
-    static void startAppWidgetUpdate(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    static Intent constructUpdateIntent(Context context, int appWidgetId) {
         CharSequence url = WeatherWidgetConfigureActivity.loadURLPref(context, appWidgetId);
+
         Intent serviceIntent = new Intent(context, WeatherFetchService.class);
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         serviceIntent.putExtra(WeatherFetchService.EXTRA_URL, url.toString());
-        context.startService(serviceIntent);
+        return serviceIntent;
+    }
+
+    static void startAppWidgetUpdate(Context context, int appWidgetId) {
+        context.startService(constructUpdateIntent(context, appWidgetId));
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bitmap bmp) {
@@ -46,6 +52,11 @@ public class WeatherWidget extends AppWidgetProvider {
             bmp = newBitmap;
         }
         views.setImageViewBitmap(R.id.weather_image, bmp);
+
+        Intent intent = constructUpdateIntent(context, appWidgetId);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0 , intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.weather_image, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -63,12 +74,15 @@ public class WeatherWidget extends AppWidgetProvider {
 
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
-        textPaint.setTextSize(16 * context.getResources().getDisplayMetrics().density);
-        textPaint.setColor(0xFF000000);
+        textPaint.setTextSize(40 * context.getResources().getDisplayMetrics().density);
+        textPaint.setColor(0xFFcccccc);
 
         int width = (int) textPaint.measureText(text);
         StaticLayout staticLayout = new StaticLayout(text, textPaint, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+        canvas.save();
+        canvas.translate((canvas.getWidth() - width) / 2, canvas.getHeight() / 2);
         staticLayout.draw(canvas);
+        canvas.restore();
 
         //paint.setTextSize(40);
         //paint.setColor(Color.LTGRAY);
@@ -81,7 +95,7 @@ public class WeatherWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            startAppWidgetUpdate(context, appWidgetManager, appWidgetId);
+            startAppWidgetUpdate(context, appWidgetId);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }

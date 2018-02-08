@@ -27,8 +27,7 @@ public class WeatherWidgetConfigureActivity extends Activity {
             saveURLPref(context, mAppWidgetId, widgetText);
 
             // It is the responsibility of the configuration activity to update the app widget
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            WeatherWidget.startAppWidgetUpdate(context, appWidgetManager, mAppWidgetId);
+            WeatherWidget.startAppWidgetUpdate(context, mAppWidgetId);
 
             // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();
