@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
@@ -38,13 +39,16 @@ public class WeatherWidget extends AppWidgetProvider {
     }
 
     static void startAppWidgetUpdate(Context context, int appWidgetId) {
+        Log.i("WeatherWidget", "startAppWidgetUpdate() called");
         context.startService(constructUpdateIntent(context, appWidgetId));
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bitmap bmp) {
+        Log.i("WeatherWidget", "updateAppWidget() called");
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weather_widget);
         //views.setTextViewText(R.id.appwidget_text, widgetText);
+        Log.i("WeatherWidget", "updateAppWidget(): bitmap: " + ((bmp==null)?"null":"not null"));
         if (bmp == null) {
             bmp = constructErrorBitmap(context);
         } else {
@@ -93,6 +97,7 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.i("WeatherWidget", "onUpdate() called");
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             startAppWidgetUpdate(context, appWidgetId);
@@ -104,6 +109,7 @@ public class WeatherWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         if (intent.getAction().equals(DATA_FETCHED)) {
+            Log.i("WeatherWidget", "Got DATA_FETCHED intent");
             int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             Bitmap bmp = intent.getParcelableExtra(WeatherFetchService.EXTRA_BITMAP);

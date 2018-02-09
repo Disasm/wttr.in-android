@@ -35,6 +35,7 @@ public class WeatherFetchService extends Service {
                                              AppWidgetManager.INVALID_APPWIDGET_ID);
         }
         if (intent.hasExtra(EXTRA_URL)) {
+            Log.i("WeatherFetchService", "Got fetch intent");
             url = intent.getStringExtra(EXTRA_URL);
             new DownloadFileTask().execute(url);
         }
@@ -58,9 +59,9 @@ public class WeatherFetchService extends Service {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-                Log.w("WTTR", "Bitmap fetched");
+                Log.i("DownloadFileTask", "Bitmap fetched");
             } else {
-                Log.w("WTTR", "Error fetching bitmap");
+                Log.i("DownloadFileTask", "Error fetching bitmap");
             }
             Intent widgetUpdateIntent = new Intent();
             widgetUpdateIntent.setAction(WeatherWidget.DATA_FETCHED);
