@@ -36,9 +36,8 @@ public class WeatherFetchService extends Service {
         }
         if (intent.hasExtra(EXTRA_URL)) {
             url = intent.getStringExtra(EXTRA_URL);
+            new DownloadFileTask().execute(url);
         }
-
-        new DownloadFileTask().execute(url);
 
         return super.onStartCommand(intent, flags, startId);
     }
