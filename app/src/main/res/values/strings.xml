@@ -4,4 +4,10 @@
     <string name="configure">Configure URL</string>
     <string name="add_widget">Add widget</string>
     <string name="png_url">URL for .png image</string>
+    <string name="location">Location:</string>
+    <string name="use_ms_for_wind">Use m/s for wind</string>
+    <string name="default_city">Moscow</string>
+    <string name="show_caption">Show caption</string>
+    <string name="padding">Padding</string>
+    <string name="today">Today</string>
 </resources>

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 
 /**
  * The configuration screen for the {@link WeatherWidget WeatherWidget} AppWidget.
@@ -17,14 +18,32 @@ public class WeatherWidgetConfigureActivity extends Activity {
     private static final String PREFS_NAME = "in.wttr.widget.WeatherWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    EditText mAppWidgetText;
     View.OnClickListener mOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             final Context context = WeatherWidgetConfigureActivity.this;
 
+            EditText locationName = (EditText) findViewById(R.id.settings_location);
+            String locationPart = locationName.getText().toString();
+            if (locationPart.isEmpty()) return;
+            locationPart = locationPart.replace(" ", "%20");
+            locationPart = locationPart.replace("/", "%2F");
+
+            Switch todaySwitch = (Switch) findViewById(R.id.settings_today);
+            Switch msSwitch = (Switch) findViewById(R.id.settings_use_ms);
+            Switch captionSwitch = (Switch) findViewById(R.id.settings_caption);
+            Switch paddingSwitch = (Switch) findViewById(R.id.settings_padding);
+
+            String todayPart = todaySwitch.isChecked()?"0":"";
+            String msPart = msSwitch.isChecked()?"M":"";
+            String captionPart = captionSwitch.isChecked()?"":"q";
+            String paddingPart = paddingSwitch.isChecked()?"p":"";
+            String settingsPart = msPart + captionPart + paddingPart + todayPart;
+            if (!settingsPart.isEmpty()) settingsPart = "_" + settingsPart;
+
+            String url = "http://wttr.in/" + locationPart + settingsPart + ".png";
+
             // When the button is clicked, store the string locally
-            String widgetText = mAppWidgetText.getText().toString();
-            saveURLPref(context, mAppWidgetId, widgetText);
+            saveURLPref(context, mAppWidgetId, url);
 
             // It is the responsibility of the configuration activity to update the app widget
             WeatherWidget.startAppWidgetUpdate(context, mAppWidgetId);
@@ -75,7 +94,6 @@ public class WeatherWidgetConfigureActivity extends Activity {
         setResult(RESULT_CANCELED);
 
         setContentView(R.layout.weather_widget_configure);
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
         findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
 
         // Find the widget id from the intent.
@@ -91,8 +109,6 @@ public class WeatherWidgetConfigureActivity extends Activity {
             finish();
             return;
         }
-
-        mAppWidgetText.setText(loadURLPref(WeatherWidgetConfigureActivity.this, mAppWidgetId));
     }
 }
 

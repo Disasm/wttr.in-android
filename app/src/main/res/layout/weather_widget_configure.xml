@@ -5,18 +5,57 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/configure" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
 
-    <EditText
-        android:id="@+id/appwidget_text"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:text="@string/location" />
+
+        <EditText
+            android:id="@+id/settings_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/default_city" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/settings_today"
+        android:text="@string/today"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="@string/png_url" />
+        android:layout_marginBottom="10dp"
+        android:checked="true" />
+
+    <Switch
+        android:id="@+id/settings_use_ms"
+        android:text="@string/use_ms_for_wind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:checked="true" />
+
+    <Switch
+        android:id="@+id/settings_caption"
+        android:text="@string/show_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:checked="false" />
+
+    <Switch
+        android:id="@+id/settings_padding"
+        android:text="@string/padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:checked="true" />
 
     <Button
         android:id="@+id/add_button"
